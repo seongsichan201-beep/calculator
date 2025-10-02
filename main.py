@@ -9,6 +9,7 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QLineEdit,
 )
+from PyQt6.QtWidgets import QTextEdit
 
 class Calculator(QMainWindow):
     """
@@ -21,17 +22,16 @@ class Calculator(QMainWindow):
         super().__init__()
 
         self.setWindowTitle("계산기")
-        self.setFixedSize(300, 400)  # 창 크기 고정
+        self.setMinimumSize(300, 400)  # 창의 최소 크기를 설정합니다.
 
         # 모든 위젯을 담을 중앙 위젯과 메인 레이아웃 설정
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
         main_layout = QVBoxLayout(central_widget)
 
-        # 계산 결과를 보여줄 디스플레이 (QLineEdit)
-        self.display = QLineEdit()
+        # 결과를 보여줄 디스플레이 (QTextEdit)
+        self.display = QTextEdit()
         self.display.setReadOnly(True)  # 읽기 전용으로 설정
-        self.display.setAlignment(Qt.AlignmentFlag.AlignRight) # 텍스트 오른쪽 정렬
         self.display.setStyleSheet("font-size: 24px; padding: 10px;") # 스타일 적용
         main_layout.addWidget(self.display)
 
@@ -52,11 +52,20 @@ class Calculator(QMainWindow):
         for text, row, col, rowspan, colspan in buttons:
             button = QPushButton(text)
             button.setStyleSheet("font-size: 18px; padding: 10px;")
+            # 버튼 클릭 시그널을 슬롯에 연결
+            button.clicked.connect(self._on_button_clicked)
             buttons_layout.addWidget(button, row, col, rowspan, colspan)
 
         # 메인 레이아웃에 버튼 그리드 추가
         main_layout.addLayout(buttons_layout)
 
+        # 버튼 그리드 레이아웃이 늘어나지 않도록 스트레치 비율 설정
+        main_layout.setStretch(0, 1) # QTextEdit (display)
+        main_layout.setStretch(1, 0) # QGridLayout (buttons_layout)
+
+    def _on_button_clicked(self):
+        """버튼이 클릭될 때 호출되는 슬롯입니다."""
+        self.display.append("Button Clicked")
 
 def main():
     """
