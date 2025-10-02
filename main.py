@@ -52,8 +52,11 @@ class Calculator(QMainWindow):
         for text, row, col, rowspan, colspan in buttons:
             button = QPushButton(text)
             button.setStyleSheet("font-size: 18px; padding: 10px;")
-            # 버튼 클릭 시그널을 슬롯에 연결
-            button.clicked.connect(self._on_button_clicked)
+            # 'C' 버튼은 clear 기능을, 나머지 버튼은 기존 기능을 수행하도록 연결
+            if text == 'C':
+                button.clicked.connect(self._on_clear_button_clicked)
+            else:
+                button.clicked.connect(self._on_button_clicked)
             buttons_layout.addWidget(button, row, col, rowspan, colspan)
 
         # 메인 레이아웃에 버튼 그리드 추가
@@ -66,6 +69,10 @@ class Calculator(QMainWindow):
     def _on_button_clicked(self):
         """버튼이 클릭될 때 호출되는 슬롯입니다."""
         self.display.append("Button Clicked")
+
+    def _on_clear_button_clicked(self):
+        """'C' 버튼이 클릭될 때 호출되어 디스플레이를 지웁니다."""
+        self.display.clear()
 
 def main():
     """
